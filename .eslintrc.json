@@ -1,0 +1,25 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:jest/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "project": ["./tsconfig.json", "./tsconfig.spec.json"]
+  },
+  "ignorePatterns": ["src/declarations.d.ts", "rollup.config.js"],
+  "rules": {
+    "spaced-comment": ["error", "always"],
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}
