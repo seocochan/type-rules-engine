@@ -12,7 +12,6 @@
     "removeComments": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
   },
   "exclude": ["build", "node_modules", "**/*.spec.ts", "test/**", "*.config.ts"],
