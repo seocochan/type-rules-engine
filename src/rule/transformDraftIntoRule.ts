@@ -1,44 +1,46 @@
 import { ClassConstructor, Fact } from '../interfaces';
-import { RuleDefinition } from './rule-definition';
+import { DefaultRuleDefinition } from './default-rule-definition';
 import { getMetadataStorage } from '../metadata';
 import { RuleDraft } from './rule-draft';
+import { RuleDefinition } from './types';
+import { RulesEngineError } from '../errors';
 
-export function transformDraftIntoRule(draft: RuleDraft<Fact>): RuleDefinition<Fact> {
+export function transformDraftIntoRule<TFact extends Fact>(draft: RuleDraft<TFact>): RuleDefinition<TFact> {
   const target = draft.constructor as ClassConstructor;
   const ruleMetadata = getMetadataStorage().findOneRuleMetadata(target);
   if (!ruleMetadata) {
-    throw new Error('@Rule metadata not found');
+    throw new RulesEngineError('@Rule metadata not found');
   }
   const [whenMetadata, ...restWhenMetadatas] = getMetadataStorage().findAllWhenMetadata(target);
   if (!whenMetadata) {
-    throw new Error('@When metadata not found');
+    throw new RulesEngineError('@When metadata not found');
   }
   if (restWhenMetadatas.length > 0) {
-    throw new Error('@When decorator must be specified on one method');
+    throw new RulesEngineError('@When decorator must be specified on one method');
   }
   const thenMetadatas = getMetadataStorage()
     .findAllThenMetadata(target)
     .sort((a, b) => (a.options.order ?? 0) - (b.options.order ?? 0));
   if (thenMetadatas.length === 0) {
-    throw new Error('@Then metadata not found');
+    throw new RulesEngineError('@Then metadata not found');
   }
 
   const { name, description, priority } = ruleMetadata.options;
-  return new RuleDefinition({
+  return new DefaultRuleDefinition({
     name: name || 'Rule',
     description,
     priority: priority ?? Number.MAX_SAFE_INTEGER,
     condition: props => {
-      Object.assign(draft, { fact: props.fact, setFact: props.setFact });
+      Object.assign(draft, { getFact: props.getFact, setFact: props.setFact });
       const result: unknown = (draft[whenMetadata.propertyName as keyof typeof draft] as Function)();
       if (typeof result !== 'boolean') {
-        throw new Error('Condition method must return boolean value');
+        throw new RulesEngineError('Condition method must return boolean value');
       }
       return result;
     },
     actions: thenMetadatas.map(thenMetadata => {
       return props => {
-        Object.assign(draft, { fact: props.fact, setFact: props.setFact });
+        Object.assign(draft, { getFact: props.getFact, setFact: props.setFact });
         (draft[thenMetadata.propertyName as keyof typeof draft] as Function)();
       };
     }),

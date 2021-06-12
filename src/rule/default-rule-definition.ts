@@ -1,5 +1,5 @@
-import { Fact } from '../interfaces';
-import { Action, Condition } from './types';
+import { Action, Condition, Fact } from '../interfaces';
+import { RuleDefinition } from './types';
 
 export interface RuleCtorOptions<TFact extends Fact> {
   name: string;
@@ -9,7 +9,7 @@ export interface RuleCtorOptions<TFact extends Fact> {
   actions: Action<TFact>[];
 }
 
-export class RuleDefinition<TFact extends Fact> {
+export class DefaultRuleDefinition<TFact extends Fact> implements RuleDefinition<TFact> {
   public readonly name: string;
   public readonly description?: string;
   public readonly priority: number;
@@ -23,8 +23,4 @@ export class RuleDefinition<TFact extends Fact> {
     this.condition = options.condition;
     this.actions = options.actions;
   }
-
-  // evaluate
-
-  // execute
 }

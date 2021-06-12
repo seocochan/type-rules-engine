@@ -1,6 +1,7 @@
-import { RuleDefinition } from './rule-definition';
-import { Action, Condition } from './types';
-import { Fact } from '../interfaces';
+import { DefaultRuleDefinition } from './default-rule-definition';
+import { Action, Condition, Fact } from '../interfaces';
+import { RuleDefinition } from './types';
+import { RulesEngineError } from '../errors';
 
 export class RuleBuilder<TFact extends Fact> {
   private _name?: string;
@@ -24,24 +25,24 @@ export class RuleBuilder<TFact extends Fact> {
     return this;
   }
 
-  when<X extends TFact>(condition: Condition<X>): RuleBuilder<X> {
+  when<UFact extends TFact>(condition: Condition<UFact>): RuleBuilder<UFact> {
     this._condition = condition as Condition<TFact>;
     return this;
   }
 
-  then<X extends TFact>(action: Action<X>): RuleBuilder<X> {
+  then<UFact extends TFact>(action: Action<UFact>): RuleBuilder<UFact> {
     this._actions.push(action as Action<TFact>);
     return this;
   }
 
   build(): RuleDefinition<TFact> {
     if (!this._condition) {
-      throw new Error('Condition not set');
+      throw new RulesEngineError('Condition not set');
     }
     if (this._actions.length === 0) {
-      throw new Error('Actions not set');
+      throw new RulesEngineError('Actions not set');
     }
-    return new RuleDefinition({
+    return new DefaultRuleDefinition({
       name: this._name || 'Rule',
       description: this._description,
       priority: this._priority ?? Number.MAX_SAFE_INTEGER,

@@ -7,7 +7,11 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c",
@@ -25,12 +29,17 @@
   "repository": "https://github.com/seocochan/type-rules-engine.git",
   "homepage": "https://github.com/seocochan/type-rules-engine",
   "bugs": "https://github.com/seocochan/type-rules-engine/issues",
-  "keywords": ["rules", "typescript", "decorator"],
+  "keywords": [
+    "rules",
+    "typescript",
+    "decorator"
+  ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.1.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.2.1",
     "@types/jest": "^26.0.23",
+    "@types/lodash.clonedeep": "^4.5.6",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
     "eslint": "^7.26.0",
@@ -47,5 +56,9 @@
     "ts-jest": "^26.5.6",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "immer": "^9.0.2",
+    "lodash.clonedeep": "^4.5.0"
   }
 }

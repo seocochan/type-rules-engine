@@ -1,10 +1,9 @@
-import { Fact } from '../interfaces';
+import { Action, Condition, Fact } from '../interfaces';
 
-export type MutateFn<T extends Fact> = (fact: T) => void;
-
-export type Condition<TFact extends Fact> = (props: {
-  fact: TFact;
-  setFact: (mutateFn: MutateFn<TFact>) => void;
-}) => boolean;
-
-export type Action<TFact extends Fact> = (props: { fact: TFact; setFact: (mutateFn: MutateFn<TFact>) => void }) => void;
+export interface RuleDefinition<TFact extends Fact> {
+  name: string;
+  description?: string;
+  priority: number;
+  condition: Condition<TFact>;
+  actions: Action<TFact>[];
+}

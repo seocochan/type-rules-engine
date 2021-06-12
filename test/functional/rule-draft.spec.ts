@@ -1,4 +1,4 @@
-import { getMetadataStorage, RuleDefinition, RuleDraft, transformDraftIntoRule } from '../../src';
+import { getMetadataStorage, RuleDraft, RulesEngine } from '../../src';
 import { Rule, Then, When } from '../../src/decorators';
 
 describe('RuleDraft', () => {
@@ -6,42 +6,70 @@ describe('RuleDraft', () => {
     getMetadataStorage().clear();
   });
 
-  it('should be transformed into rule', () => {
-    const name = 'Sample rule';
-    const description = 'description goes here';
-    const priority = 1;
-    const actionHistory = [];
+  const rulesEngine = new RulesEngine();
+  const fact = { message: 'foo' };
 
-    @Rule({ name, description, priority })
-    class SampleRule extends RuleDraft<{ message: string }> {
+  it('should throw when class is not decorated with @Rule', () => {
+    class SampleRule extends RuleDraft<typeof fact> {}
+    expect(() => rulesEngine.fact(fact).rules([new SampleRule()])).toThrow();
+  });
+
+  it('should throw when no method decorated with @When found', () => {
+    @Rule()
+    class SampleRule extends RuleDraft<typeof fact> {
+      @Then()
+      doSomething() {
+        return;
+      }
+    }
+    expect(() => rulesEngine.fact(fact).rules([new SampleRule()])).toThrow();
+  });
+
+  it('should throw when many methods decorated with @When found', () => {
+    @Rule()
+    class SampleRule extends RuleDraft<typeof fact> {
       @When()
-      always() {
+      checkSomething() {
         return true;
       }
 
-      @Then({ order: 1 })
-      doSomething() {
-        actionHistory.push('doSomething');
+      @When()
+      checkSomethingMore() {
+        return true;
       }
 
-      @Then({ order: 2 })
-      doSomethingMore() {
-        actionHistory.push('doSomethingMore');
+      @Then()
+      doSomething() {
+        return;
       }
     }
+    expect(() => rulesEngine.fact(fact).rules([new SampleRule()])).toThrow();
+  });
 
-    // check rule definition
-    const sampleRule = transformDraftIntoRule(new SampleRule());
-    expect(sampleRule).toBeInstanceOf(RuleDefinition);
-    expect(sampleRule).toMatchObject({ name, description, priority });
+  it('should throw when return type of method decorated with @When is not boolean', async () => {
+    @Rule()
+    class SampleRule extends RuleDraft<typeof fact> {
+      @When()
+      checkSomething() {
+        return 'non boolean value';
+      }
 
-    // check behavior of condition and action methods
-    const emptyProps = { fact: {}, setFact: () => null };
-    expect(sampleRule.condition(emptyProps)).toEqual(true);
-    expect(sampleRule.actions).toHaveLength(2);
-    sampleRule.actions.forEach(action => {
-      expect(action(emptyProps)).toBeUndefined();
-    });
-    expect(actionHistory).toEqual(['doSomething', 'doSomethingMore']);
+      @Then()
+      doSomething() {
+        return;
+      }
+    }
+    await expect(rulesEngine.fact(fact).rules([new SampleRule()]).fire()).rejects.toThrow();
+  });
+
+  it('should throw when no method decorated with @Then found', () => {
+    @Rule()
+    class SampleRule extends RuleDraft<typeof fact> {
+      @When()
+      checkSomething() {
+        return true;
+      }
+    }
+    expect(() => rulesEngine.fact(fact).rules([new SampleRule()])).toThrow();
   });
 });

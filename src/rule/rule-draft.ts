@@ -1,11 +1,13 @@
-import { Fact } from '../interfaces';
-import { MutateFn } from './types';
+import { Fact, Immutable, MutateFn } from '../interfaces';
 
-export abstract class RuleDraft<T extends Fact> {
-  protected readonly fact!: T;
+export abstract class RuleDraft<TFact extends Fact> {
+  private fact!: Immutable<TFact>;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected setFact(mutateFn: MutateFn<T>): void {
-    // no implementation
+  protected getFact(): Immutable<TFact> {
+    return this.fact;
+  }
+
+  protected setFact(mutateFn: MutateFn<TFact>): void {
+    return;
   }
 }
