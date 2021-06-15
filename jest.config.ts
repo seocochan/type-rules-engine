@@ -1,7 +1,7 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
-  testMatch: ['**/functional/**/*.ts'],
+  testMatch: ['**/functional/**/*.ts', '**/usages/**/*.ts'],
   preset: 'ts-jest',
   testEnvironment: 'node',
   globals: {
