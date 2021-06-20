@@ -1,4 +1,4 @@
-import { getMetadataStorage, RuleDraft, RulesEngine } from '../../src';
+import { getMetadataStorage, MutateFn, RuleDraft, RulesEngine } from '../../src';
 import { Rule, Then, When } from '../../src/decorators';
 
 describe('RuleDraft', () => {
@@ -71,5 +71,21 @@ describe('RuleDraft', () => {
       }
     }
     expect(() => rulesEngine.fact(fact).rules([new SampleRule()])).toThrow();
+  });
+
+  it('should not have meaningful implementation', () => {
+    const fact = {};
+    class EmptyRule extends RuleDraft<typeof fact> {
+      getFact() {
+        return super.getFact();
+      }
+
+      setFact(mutateFn: MutateFn<typeof fact>) {
+        super.setFact(mutateFn);
+      }
+    }
+    const rule = new EmptyRule();
+    rule.setFact(() => null);
+    expect(rule.getFact()).toBeUndefined();
   });
 });
