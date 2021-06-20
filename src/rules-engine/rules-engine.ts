@@ -25,6 +25,9 @@ export class RulesEngine<TFact extends Fact> {
   }
 
   public rules<UFact extends TFact>(rules: Array<RuleDefinition<UFact> | RuleDraft<UFact>>): RulesEngine<UFact> {
+    if (rules.length === 0) {
+      throw new RulesEngineError('Rules cannot be empty');
+    }
     this._rules = rules.map(rule =>
       rule instanceof RuleDraft ? transformDraftIntoRule(rule) : rule
     ) as RuleDefinition<TFact>[];
@@ -32,18 +35,20 @@ export class RulesEngine<TFact extends Fact> {
   }
 
   public async fire(): Promise<RulesEngineResult<TFact>> {
-    this.validateRules(); // TODO: assert non null
+    if (!this.factManager) {
+      throw new RulesEngineError('fact() must be called before fire()');
+    }
+    if (!this._rules || this._rules.length === 0) {
+      throw new RulesEngineError('rules() must be called before fire()');
+    }
     const rules = this.sortRules();
     const triggeredRules: string[] = [];
-    if (!this.factManager) {
-      throw new RulesEngineError('');
-    }
 
     for (const rule of rules) {
       let evaluationResult = false;
       try {
         evaluationResult = await rule.condition(this.factManager.toProps());
-        this.config.debug && console.log(`Evaluate '${rule.name}' (result: ${evaluationResult.toString()})`);
+        this.config.debug && console.log(`Evaluated '${rule.name}' (result: ${evaluationResult.toString()})`);
       } catch (e) {
         if (e instanceof RulesEngineError) {
           throw e;
@@ -85,22 +90,10 @@ export class RulesEngine<TFact extends Fact> {
     return { triggeredRules, fact: this.factManager.cloneFact() };
   }
 
-  // TODO: separate to RuleCollection class??
-  private validateRules(): void {
-    if (this._rules == null || this._rules.length === 0) {
-      throw new RulesEngineError('Rules validation failed.');
-    }
-  }
-
   private sortRules(): RuleDefinition<TFact>[] {
     const rulesWithIndex = this._rules.map((rule, index) => [index, rule] as const);
     return rulesWithIndex
-      .sort(([index1, rule1], [index2, rule2]) => {
-        if (rule1.priority == null || rule2.priority == null) {
-          throw new RulesEngineError(`'Rule.priority' must be set before sorting.`);
-        }
-        return rule1.priority - rule2.priority || index1 - index2;
-      })
+      .sort(([index1, rule1], [index2, rule2]) => rule1.priority - rule2.priority || index1 - index2)
       .map(([_, rule]) => rule);
   }
 }

@@ -4,7 +4,7 @@ export type RulesEngineConfig = {
   skipOnFirstAppliedRule?: boolean;
   skipOnFirstNonTriggeredRule?: boolean;
   skipOnFirstFailedRule?: boolean;
-  throwOnError?: boolean; // if set to true, `skipOnFirstFailedRule` will be ignored TODO: secure by design
+  throwOnError?: boolean;
   debug?: boolean;
 };
 

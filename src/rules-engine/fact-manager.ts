@@ -1,13 +1,14 @@
 import { freeze, produce, setAutoFreeze } from 'immer';
 import cloneDeep from 'lodash.clonedeep';
 import { Fact, FactProps, Immutable, MutateFn } from '../interfaces';
+import { RulesEngineError } from '../errors';
 
 export class FactManager<TFact extends Fact> {
   fact: Immutable<TFact>;
 
   constructor(fact: TFact) {
     if (fact == null || Object.keys(fact).length === 0) {
-      throw new Error('Facts validation failed.');
+      throw new RulesEngineError('Fact cannot be null or empty object');
     }
     setAutoFreeze(false);
     this.fact = freeze(cloneDeep(fact), true) as Immutable<TFact>;

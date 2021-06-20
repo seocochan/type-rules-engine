@@ -3,9 +3,15 @@ import { RuleOptions, ThenOptions } from '../decorators';
 
 export type TargetMetadataMap<T> = Map<ClassConstructor, T>;
 
+export interface RuleMetadataOptions extends RuleOptions {
+  name: string;
+  description?: string;
+  priority?: number;
+}
+
 export interface RuleMetadata {
   target: ClassConstructor;
-  options: RuleOptions;
+  options: RuleMetadataOptions;
 }
 
 export interface WhenMetadata {
@@ -13,10 +19,14 @@ export interface WhenMetadata {
   propertyName: string;
 }
 
+export interface ThenMetadataOptions extends ThenOptions {
+  order: number;
+}
+
 export interface ThenMetadata {
   target: ClassConstructor;
   propertyName: string;
-  options: ThenOptions;
+  options: ThenMetadataOptions;
 }
 
 export interface FactMetadata {

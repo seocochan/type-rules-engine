@@ -20,14 +20,14 @@ export function transformDraftIntoRule<TFact extends Fact>(draft: RuleDraft<TFac
   }
   const thenMetadatas = getMetadataStorage()
     .findAllThenMetadata(target)
-    .sort((a, b) => (a.options.order ?? 0) - (b.options.order ?? 0));
+    .sort((a, b) => a.options.order - b.options.order);
   if (thenMetadatas.length === 0) {
     throw new RulesEngineError('@Then metadata not found');
   }
 
   const { name, description, priority } = ruleMetadata.options;
   return new DefaultRuleDefinition({
-    name: name || 'Rule',
+    name,
     description,
     priority: priority ?? Number.MAX_SAFE_INTEGER,
     condition: props => {
