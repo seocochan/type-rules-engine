@@ -28,10 +28,3 @@ export interface ThenMetadata {
   propertyName: string;
   options: ThenMetadataOptions;
 }
-
-export interface FactMetadata {
-  target: ClassConstructor;
-  propertyName: string;
-  index: number;
-  key?: string;
-}

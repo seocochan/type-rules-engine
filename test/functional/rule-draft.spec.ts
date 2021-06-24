@@ -1,5 +1,4 @@
-import { getMetadataStorage, MutateFn, RuleDraft, RulesEngine } from '../../src';
-import { Rule, Then, When } from '../../src/decorators';
+import { getMetadataStorage, MutateFn, Rule, RuleDraft, RulesEngine, Then, When } from '../../src';
 
 describe('RuleDraft', () => {
   beforeAll(() => {

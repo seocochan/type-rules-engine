@@ -1,7 +1,7 @@
 {
   "name": "type-rules-engine",
   "version": "0.1.0",
-  "description": "wip",
+  "description": "Simple, declarative and immutable rules engine for TypeScript.",
   "sideEffects": false,
   "sonpm urce": "src/index.ts",
   "main": "dist/index.cjs.js",
@@ -32,7 +32,8 @@
   "keywords": [
     "rules",
     "typescript",
-    "decorator"
+    "decorator",
+    "immutable"
   ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.1.0",

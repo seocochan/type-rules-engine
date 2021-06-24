@@ -1,5 +1,4 @@
-import { getMetadataStorage, RuleBuilder, RuleDraft, RulesEngine } from '../../src';
-import { Rule, Then, When } from '../../src/decorators';
+import { getMetadataStorage, Rule, RuleBuilder, RuleDraft, RulesEngine, Then, When } from '../../src';
 
 describe('Immutability', () => {
   beforeAll(() => {

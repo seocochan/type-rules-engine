@@ -88,7 +88,7 @@ describe('RulesEngine', () => {
     await expect(rulesEngine.rules([ruleThrowOnAction]).fire()).resolves.toBeDefined();
   });
 
-  it('should stop execution when condition() throws error and config.skipOnFirstNonTriggeredRule=true', async () => {
+  it('should stop execution when condition() fails and config.skipOnFirstNonTriggeredRule=true', async () => {
     const rule1 = new RuleBuilder()
       .name('rule-1')
       .when(() => true)
@@ -144,7 +144,7 @@ describe('RulesEngine', () => {
     expect(result.triggeredRules).toEqual(['rule-1', 'rule-2']);
   });
 
-  it('should stop execution when action() runs successful and config.skipOnFirstAppliedRule=true', async () => {
+  it('should stop execution when action() runs successfully and config.skipOnFirstAppliedRule=true', async () => {
     const rule1 = new RuleBuilder()
       .name('rule-1')
       .when(() => true)
