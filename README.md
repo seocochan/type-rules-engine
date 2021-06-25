@@ -56,7 +56,8 @@ Last, a little `tsconfig.json` tweak is needed.
 
 ```ts
 // 1. Define fact object
-const feedCatFact = {
+const 
+CatFact = {
   says: 'meow',
   isHungry: true,
   weight: 5.5,
@@ -112,7 +113,7 @@ class FeedCatRule extends RuleDraft<typeof feedCatFact> {
     });
   }
 }
-const feedCarRule = new FeedCatRule()
+const feedCatRule = new FeedCatRule()
 
 // 3. Fire rules engine
 const result = await new RulesEngine().fact(feedCatFact).rules([feedCatRule]).fire();
