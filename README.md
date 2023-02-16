@@ -56,8 +56,7 @@ Last, a little `tsconfig.json` tweak is needed.
 
 ```ts
 // 1. Define fact object
-const 
-CatFact = {
+const feedCatFact = {
   says: 'meow',
   isHungry: true,
   weight: 5.5,
